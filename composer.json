@@ -1,0 +1,38 @@
+{
+    "name": "prophit-php/prophit-core",
+    "description": "A PHP library for personal finance management",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matthew Turland",
+            "email": "me@matthewturland.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Prophit\\Core\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8",
+        "loophp/phptree": "^2.6"
+    },
+    "require-dev": {
+        "lukeraymonddowning/pest-plugin-money": "^1.1",
+        "pestphp/pest": "^1.22",
+        "pestphp/pest-plugin-parallel": "^1.2",
+        "phpstan/phpstan": "^1.9",
+        "roave/security-advisories": "dev-latest"
+    },
+    "scripts": {
+        "analyze": "phpstan analyze -c phpstan-baseline.neon",
+        "test": "pest"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        },
+        "sort-packages": true
+    }
+}
