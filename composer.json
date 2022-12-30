@@ -15,8 +15,7 @@
         }
     },
     "require": {
-        "php": ">=8",
-        "loophp/phptree": "^2.6"
+        "php": ">=8"
     },
     "require-dev": {
         "lukeraymonddowning/pest-plugin-money": "^1.1",

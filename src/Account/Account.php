@@ -7,7 +7,6 @@ class Account
     public function __construct(
         private string $id,
         private string $name,
-        private ?string $parentId = null,
     ) { }
 
     public function getId(): string
@@ -20,13 +19,8 @@ class Account
         return $this->name;
     }
 
-    public function getParentId(): ?string
+    public function isSame(self $account): bool
     {
-        return $this->parentId;
-    }
-
-    public function hasParent(): bool
-    {
-        return $this->parentId !== null;
+        return $this->id === $account->id;
     }
 }
