@@ -1,5 +1,5 @@
 {
-    "name": "prophit-php/prophit-core",
+    "name": "prophit/core",
     "description": "A PHP library for personal finance management",
     "type": "library",
     "license": "MIT",
