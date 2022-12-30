@@ -37,30 +37,32 @@ class ArrayAccountRepository implements AccountRepository
 
     public function searchAccounts(AccountSearchCriteria $criteria): AccountIterator
     {
+        $accounts = $this->accounts;
+
         $ids = $criteria->getIds();
         if ($ids !== null) {
-            $accounts = array_map(fn(string $id): Account => $this->getAccountById($id), $ids);
-            return new AccountIterator(...$accounts);
+            $accounts = array_filter(
+                $accounts,
+                fn(Account $account): bool => in_array($account->getId(), $ids),
+            );
         }
 
         $name = $criteria->getName();
         if ($name !== null) {
             $accounts = array_filter(
-                $this->accounts,
+                $accounts,
                 fn(Account $account): bool => $account->getName() === $name,
             );
-            return new AccountIterator(...$accounts);
         }
 
         $parentIds = $criteria->getParentIds();
         if ($parentIds !== null) {
             $accounts = array_filter(
-                $this->accounts,
+                $accounts,
                 fn(Account $account): bool => in_array($account->getParentId(), $parentIds),
             );
-            return new AccountIterator(...$accounts);
         }
 
-        return $this->getAllAccounts();
+        return new AccountIterator(...$accounts);
     }
 }

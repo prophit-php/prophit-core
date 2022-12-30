@@ -116,6 +116,29 @@ test('searches accounts by parent IDs', function () {
     expect($expectedAccounts)->toBe($actualAccounts);
 });
 
+test('searches accounts by multiple criteria', function () {
+    $accounts = [
+        new Account('1', 'Foo'),
+        new Account('2', 'Bar'),
+    ];
+    $repository = new ArrayAccountRepository(...$accounts);
+
+    $expectedAccounts = [
+        $accounts[0],
+    ];
+    $criteria = new AccountSearchCriteria(
+        ids: [
+            $accounts[0]->getId(),
+            $accounts[1]->getId(),
+        ],
+        name: 'Foo',
+    );
+    $actualAccounts = iterator_to_array(
+        $repository->searchAccounts($criteria),
+    );
+    expect($expectedAccounts)->toBe($actualAccounts);
+});
+
 test('searches all accounts', function () {
     $foundAccount = new Account('1', 'Not Found');
     $repository = new ArrayAccountRepository($foundAccount);
