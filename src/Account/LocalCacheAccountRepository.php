@@ -41,10 +41,12 @@ class LocalCacheAccountRepository implements AccountRepository
     public function searchAccounts(AccountSearchCriteria $criteria): AccountIterator
     {
         $ids = $criteria->getIds();
-        $cachedIds = array_filter($ids, fn(string $id): bool => isset($this->accounts[$id]));
-        if ($ids === $cachedIds) {
-            $accounts = array_map($ids, fn(string $id): Account => $this->accounts[$id]);
-            return new AccountIterator(...$accounts);
+        if ($ids !== null) {
+            $cachedIds = array_filter($ids, fn(string $id): bool => isset($this->accounts[$id]));
+            if ($ids === $cachedIds) {
+                $accounts = array_map(fn(string $id): Account => $this->accounts[$id], $ids);
+                return new AccountIterator(...$accounts);
+            }
         }
 
         if ($this->haveAllAccounts) {
