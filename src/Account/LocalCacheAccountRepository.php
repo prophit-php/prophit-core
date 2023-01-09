@@ -58,16 +58,6 @@ class LocalCacheAccountRepository implements AccountRepository
                 );
                 return new AccountIterator(...$accounts);
             }
-
-            $parentIds = $criteria->getParentIds();
-            if ($parentIds !== null) {
-                $accounts = array_filter(
-                    $this->accounts,
-                    fn(Account $account): bool => in_array($account->getParentId(), $parentIds),
-                );
-                return new AccountIterator(...$accounts);
-            }
-
             return new AccountIterator(...$this->accounts);
         }
 
