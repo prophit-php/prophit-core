@@ -37,32 +37,40 @@ class ArrayAccountRepository implements AccountRepository
 
     public function searchAccounts(AccountSearchCriteria $criteria): AccountIterator
     {
-        $accounts = $this->accounts;
-
-        $ids = $criteria->getIds();
-        if ($ids !== null) {
-            $accounts = array_filter(
-                $accounts,
-                fn(Account $account): bool => in_array($account->getId(), $ids),
-            );
-        }
-
-        $name = $criteria->getName();
-        if ($name !== null) {
-            $accounts = array_filter(
-                $accounts,
-                fn(Account $account): bool => $account->getName() === $name,
-            );
-        }
-
-        $parentIds = $criteria->getParentIds();
-        if ($parentIds !== null) {
-            $accounts = array_filter(
-                $accounts,
-                fn(Account $account): bool => in_array($account->getParentId(), $parentIds),
-            );
-        }
-
+        $accounts = array_reduce(
+            [
+                fn($accounts) => $this->filterAccountsById($accounts, $criteria->getIds()),
+                fn($accounts) => $this->filterAccountsByName($accounts, $criteria->getName()),
+            ],
+            fn(array $accounts, callable $callback) => $callback($accounts),
+            $this->accounts,
+        );
         return new AccountIterator(...$accounts);
+    }
+
+    /**
+     * @param Account[] $accounts
+     * @param string[]|null $ids
+     * @return Account[]
+     */
+    private function filterAccountsById(array $accounts, ?array $ids): array
+    {
+        return $ids === null ? $accounts :array_filter(
+            $accounts,
+            fn(Account $account): bool => in_array($account->getId(), $ids),
+        );
+    }
+
+    /**
+     * @param Account[] $accounts
+     * @param string|null $name
+     * @return Account[]
+     */
+    private function filterAccountsByName(array $accounts, ?string $name): array
+    {
+        return $name === null ? $accounts : array_filter(
+            $accounts,
+            fn(Account $account): bool => $account->getName() === $name,
+        );
     }
 }
