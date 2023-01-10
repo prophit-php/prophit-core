@@ -21,4 +21,14 @@ class AccountIterator implements IteratorAggregate
     {
         return new ArrayIterator($this->accounts);
     }
+
+    public function contains(Account $account): bool
+    {
+        foreach ($this as $otherAccount) {
+            if ($otherAccount->isSame($account)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
