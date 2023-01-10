@@ -8,7 +8,7 @@ use Prophit\Core\Account\{
 
 use Prophit\Core\Exception\AccountNotFoundException;
 
-test('saves account', function () {
+it('saves account', function () {
     $account = new Account('1', 'Test');
     $repository = new ArrayAccountRepository;
     $repository->saveAccount($account);
@@ -18,7 +18,7 @@ test('saves account', function () {
     expect($expectedAccount)->toBe($actualAccount);
 });
 
-test('gets existing account by ID', function () {
+it('gets existing account by ID', function () {
     $foundAccount = new Account('1', 'Found');
     $notFoundAccount = new Account('2', 'Not Found');
     $repository = new ArrayAccountRepository(
@@ -31,13 +31,13 @@ test('gets existing account by ID', function () {
     expect($expectedAccount)->toBe($actualAccount);
 });
 
-test('does not get nonexistent account by ID', function () {
+it('does not get nonexistent account by ID', function () {
     $notFoundAccount = new Account('1', 'Not Found');
     $repository = new ArrayAccountRepository($notFoundAccount);
     $repository->getAccountById('2');
 })->throws(AccountNotFoundException::class);
 
-test('gets all accounts', function () {
+it('gets all accounts', function () {
     $accounts = [
         new Account('1', 'Account 1'),
         new Account('2', 'Account 2'),
@@ -49,7 +49,7 @@ test('gets all accounts', function () {
     expect($expectedAccounts)->toBe($actualAccounts);
 });
 
-test('searches accounts by IDs', function () {
+it('searches accounts by IDs', function () {
     $accounts = [
         new Account('1', 'Found 1'),
         new Account('2', 'Found 2'),
@@ -71,7 +71,7 @@ test('searches accounts by IDs', function () {
     expect($expectedAccounts)->toBe($actualAccounts);
 });
 
-test('searches accounts by name', function () {
+it('searches accounts by name', function () {
     $accounts = [
         new Account('1', 'Foo'),
         new Account('2', 'Foobar'),
@@ -89,7 +89,7 @@ test('searches accounts by name', function () {
     expect($expectedAccounts)->toBe($actualAccounts);
 });
 
-test('searches accounts by multiple criteria', function () {
+it('searches accounts by multiple criteria', function () {
     $accounts = [
         new Account('1', 'Foo'),
         new Account('2', 'Bar'),
@@ -112,7 +112,7 @@ test('searches accounts by multiple criteria', function () {
     expect($expectedAccounts)->toBe($actualAccounts);
 });
 
-test('searches all accounts', function () {
+it('searches all accounts', function () {
     $foundAccount = new Account('1', 'Not Found');
     $repository = new ArrayAccountRepository($foundAccount);
 
