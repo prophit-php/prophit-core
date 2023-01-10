@@ -1,15 +1,19 @@
 <?php
 
-use Prophit\Core\Account\{
-    Account,
-    AccountSearchCriteria,
-    ArrayAccountRepository,
+use Prophit\Core\{
+    Account\Account,
+    Account\AccountSearchCriteria,
+    Account\ArrayAccountRepository,
+    Exception\AccountNotFoundException,
+    Tests\Account\AccountFactory,
 };
 
-use Prophit\Core\Exception\AccountNotFoundException;
+beforeEach(function () {
+    $this->factory = new AccountFactory;
+});
 
 it('saves account', function () {
-    $account = new Account('1', 'Test');
+    $account = $this->factory->create();
     $repository = new ArrayAccountRepository;
     $repository->saveAccount($account);
 
@@ -19,12 +23,8 @@ it('saves account', function () {
 });
 
 it('gets existing account by ID', function () {
-    $foundAccount = new Account('1', 'Found');
-    $notFoundAccount = new Account('2', 'Not Found');
-    $repository = new ArrayAccountRepository(
-        $foundAccount,
-        $notFoundAccount,
-    );
+    [$foundAccount, $notFoundAccount] = $accounts = $this->factory->count(2);
+    $repository = new ArrayAccountRepository(...$accounts);
 
     $expectedAccount = $foundAccount;
     $actualAccount = $repository->getAccountById($expectedAccount->getId());
@@ -32,16 +32,13 @@ it('gets existing account by ID', function () {
 });
 
 it('does not get nonexistent account by ID', function () {
-    $notFoundAccount = new Account('1', 'Not Found');
+    $notFoundAccount = $this->factory->create();
     $repository = new ArrayAccountRepository($notFoundAccount);
-    $repository->getAccountById('2');
+    $repository->getAccountById('-1');
 })->throws(AccountNotFoundException::class);
 
 it('gets all accounts', function () {
-    $accounts = [
-        new Account('1', 'Account 1'),
-        new Account('2', 'Account 2'),
-    ];
+    $accounts = $this->factory->count(2);
     $repository = new ArrayAccountRepository(...$accounts);
 
     $expectedAccounts = $accounts;
@@ -50,12 +47,7 @@ it('gets all accounts', function () {
 });
 
 it('searches accounts by IDs', function () {
-    $accounts = [
-        new Account('1', 'Found 1'),
-        new Account('2', 'Found 2'),
-        new Account('3', 'Not Found 1'),
-        new Account('4', 'Not Found 2'),
-    ];
+    $accounts = $this->factory->count(4);
     $repository = new ArrayAccountRepository(...$accounts);
 
     $expectedAccounts = array_slice($accounts, 0, 2);
@@ -73,9 +65,9 @@ it('searches accounts by IDs', function () {
 
 it('searches accounts by name', function () {
     $accounts = [
-        new Account('1', 'Foo'),
-        new Account('2', 'Foobar'),
-        new Account('3', 'Bar'),
+        $this->factory->create(name: 'Foo'),
+        $this->factory->create(name: 'Foobar'),
+        $this->factory->create(name: 'Bar'),
     ];
     $repository = new ArrayAccountRepository(...$accounts);
 
@@ -91,8 +83,8 @@ it('searches accounts by name', function () {
 
 it('searches accounts by multiple criteria', function () {
     $accounts = [
-        new Account('1', 'Foo'),
-        new Account('2', 'Bar'),
+        $this->factory->create(name: 'Foo'),
+        $this->factory->create(name: 'Bar'),
     ];
     $repository = new ArrayAccountRepository(...$accounts);
 
@@ -113,7 +105,7 @@ it('searches accounts by multiple criteria', function () {
 });
 
 it('searches all accounts', function () {
-    $foundAccount = new Account('1', 'Not Found');
+    $foundAccount = $this->factory->create();
     $repository = new ArrayAccountRepository($foundAccount);
 
     $expectedAccounts = [$foundAccount];

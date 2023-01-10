@@ -14,10 +14,16 @@
             "Prophit\\Core\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Prophit\\Core\\Tests\\": "tests/"
+        }
+    },
     "require": {
         "php": ">=8"
     },
     "require-dev": {
+        "fakerphp/faker": "^1.21",
         "lukeraymonddowning/pest-plugin-money": "^1.1",
         "pestphp/pest": "^1.22",
         "pestphp/pest-plugin-parallel": "^1.2",
