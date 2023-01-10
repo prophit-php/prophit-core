@@ -54,7 +54,7 @@ class LocalCacheAccountRepository implements AccountRepository
             if ($name !== null) {
                 $accounts = array_filter(
                     $this->accounts,
-                    fn(Account $account): bool => $account->getName() === $name,
+                    fn(Account $account): bool => $this->hasMatchingName($account, $name),
                 );
                 return new AccountIterator(...$accounts);
             }
@@ -66,5 +66,10 @@ class LocalCacheAccountRepository implements AccountRepository
             $this->accounts[$account->getId()] = $account;
         }
         return new AccountIterator(...$accounts);
+    }
+
+    protected function hasMatchingName(Account $account, string $name): bool
+    {
+        return stripos($account->getName(), $name) !== false;
     }
 }
