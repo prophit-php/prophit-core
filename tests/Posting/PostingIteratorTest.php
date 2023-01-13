@@ -1,7 +1,5 @@
 <?php
 
-use Brick\Money\Money;
-
 use Prophit\Core\{
     Account\Account,
     Posting\Posting,

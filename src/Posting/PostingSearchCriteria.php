@@ -2,13 +2,12 @@
 
 namespace Prophit\Core\Posting;
 
-use Brick\Money\Money;
-
 use DateTimeInterface;
 
 use Prophit\Core\{
     Account\AccountIterator,
     Date\DateRange,
+    Money\Money,
     Money\MoneyRange,
 };
 

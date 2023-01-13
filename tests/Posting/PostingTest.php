@@ -1,9 +1,8 @@
 <?php
 
-use Brick\Money\Money;
-
 use Prophit\Core\{
     Account\Account,
+    Money\Money,
     Posting\Posting,
     Tests\Account\AccountFactory,
     Tests\Posting\PostingFactory,
@@ -26,7 +25,7 @@ it('gets account', function () {
 });
 
 it('gets amount', function () {
-    $amount = Money::of(100, 'USD');
+    $amount = new Money(100, 'USD');
     $posting = $this->factory->create(amount: $amount);
     expect($posting->getAmount())->toBe($amount);
 });

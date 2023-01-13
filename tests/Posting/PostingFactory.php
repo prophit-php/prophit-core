@@ -2,8 +2,6 @@
 
 namespace Prophit\Core\Tests\Posting;
 
-use Brick\Money\Money;
-
 use DateTime;
 use DateTimeInterface;
 
@@ -14,6 +12,7 @@ use Faker\{
 
 use Prophit\Core\{
     Account\Account,
+    Money\Money,
     Posting\Posting,
     Tests\Account\AccountFactory,
     Tests\User\UserFactory,
@@ -53,7 +52,7 @@ class PostingFactory
             $account = $this->accountFactory->create();
         }
         if ($amount === null) {
-            $amount = Money::of($this->lastId, 'USD');
+            $amount = new Money($this->lastId, 'USD');
         }
         if ($modifiedDate === null) {
             $modifiedDate = $this->faker->dateTime();

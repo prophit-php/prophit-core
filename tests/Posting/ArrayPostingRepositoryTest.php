@@ -1,12 +1,11 @@
 <?php
 
-use Brick\Money\Money;
-
 use Prophit\Core\{
     Account\Account,
     Account\AccountIterator,
     Date\DateRange,
     Exception\PostingNotFoundException,
+    Money\Money,
     Money\MoneyRange,
     Posting\ArrayPostingRepository,
     Posting\Posting,
@@ -64,8 +63,8 @@ it('searches by account', function () {
 });
 
 it('searches by single amount', function () {
-    $posting = $this->factory->create(amount: Money::of(1, 'USD'));
-    $otherPosting = $this->factory->create(amount: Money::of(2, 'USD'));
+    $posting = $this->factory->create(amount: new Money(1, 'USD'));
+    $otherPosting = $this->factory->create(amount: new Money(2, 'USD'));
     $repository = new ArrayPostingRepository($posting, $otherPosting);
 
     $criteria = new PostingSearchCriteria(amounts: $posting->getAmount());
@@ -75,11 +74,11 @@ it('searches by single amount', function () {
 
 
 it('searches by amount range', function () {
-    $posting = $this->factory->create(amount: Money::of(2, 'USD'));
-    $otherPosting = $this->factory->create(amount: Money::of(4, 'USD'));
+    $posting = $this->factory->create(amount: new Money(2, 'USD'));
+    $otherPosting = $this->factory->create(amount: new Money(4, 'USD'));
     $repository = new ArrayPostingRepository($posting, $otherPosting);
 
-    $amounts = new MoneyRange(Money::of(1, 'USD'), Money::of(3, 'USD'));
+    $amounts = new MoneyRange(new Money(1, 'USD'), new Money(3, 'USD'));
     $criteria = new PostingSearchCriteria(amounts: $amounts);
     $results = $repository->searchPostings($criteria);
     expect(iterator_to_array($results))->toBe([$posting]);

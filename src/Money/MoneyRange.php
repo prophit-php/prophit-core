@@ -2,8 +2,6 @@
 
 namespace Prophit\Core\Money;
 
-use Brick\Money\Money;
-
 class MoneyRange
 {
     private Money $minimumInclusive;
