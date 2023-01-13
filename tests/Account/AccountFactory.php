@@ -9,17 +9,25 @@ use Faker\{
     Generator,
 };
 
-use Prophit\Core\Account\Account;
+use Prophit\Core\{
+    Account\Account,
+    Tests\User\UserFactory,
+    User\SimpleUser,
+    User\User,
+};
 
 class AccountFactory
 {
     private Generator $faker;
+
+    private UserFactory $userFactory;
 
     private int $lastId;
 
     public function __construct()
     {
         $this->faker = Factory::create();
+        $this->userFactory = new UserFactory;
         $this->lastId = 0;
     }
 
@@ -27,6 +35,7 @@ class AccountFactory
         ?string $id = null,
         ?string $name = null,
         ?DateTimeInterface $modifiedDate = null,
+        ?User $modifiedUser = null,
     ): Account {
         if ($id === null) {
             $id = (string) ++$this->lastId;
@@ -42,7 +51,11 @@ class AccountFactory
             $modifiedDate = $this->faker->dateTime();
         }
 
-        return new Account($id, $name, $modifiedDate);
+        if ($modifiedUser === null) {
+            $modifiedUser = $this->userFactory->create();
+        }
+
+        return new Account($id, $name, $modifiedDate, $modifiedUser);
     }
 
     /**

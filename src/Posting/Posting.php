@@ -3,8 +3,13 @@
 namespace Prophit\Core\Posting;
 
 use Brick\Money\Money;
+
 use DateTimeInterface;
-use Prophit\Core\Account\Account;
+
+use Prophit\Core\{
+    Account\Account,
+    User\User,
+};
 
 class Posting
 {
@@ -13,6 +18,7 @@ class Posting
         private Account $account,
         private Money $amount,
         private DateTimeInterface $modifiedDate,
+        private User $modifiedUser,
         private ?DateTimeInterface $clearedDate = null,
     ) { }
 
@@ -34,6 +40,11 @@ class Posting
     public function getModifiedDate(): DateTimeInterface
     {
         return $this->modifiedDate;
+    }
+
+    public function getModifiedUser(): User
+    {
+        return $this->modifiedUser;
     }
 
     public function getClearedDate(): ?DateTimeInterface

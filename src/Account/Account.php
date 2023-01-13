@@ -4,12 +4,15 @@ namespace Prophit\Core\Account;
 
 use DateTimeInterface;
 
+use Prophit\Core\User\User;
+
 class Account
 {
     public function __construct(
         private string $id,
         private string $name,
         private DateTimeInterface $modifiedDate,
+        private User $modifiedUser,
     ) { }
 
     public function getId(): string
@@ -25,6 +28,11 @@ class Account
     public function getModifiedDate(): DateTimeInterface
     {
         return $this->modifiedDate;
+    }
+
+    public function getModifiedUser(): User
+    {
+        return $this->modifiedUser;
     }
 
     public function isSame(self $account): bool
