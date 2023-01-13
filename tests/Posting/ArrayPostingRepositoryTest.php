@@ -85,26 +85,26 @@ it('searches by amount range', function () {
     expect(iterator_to_array($results))->toBe([$posting]);
 });
 
-it('searches by single created date', function () {
+it('searches by single modified date', function () {
     $posting = $this->factory->create();
-    $otherPosting = $this->factory->create(createdDate: new DateTime('-1 day'));
+    $otherPosting = $this->factory->create(modifiedDate: new DateTime('-1 day'));
     $repository = new ArrayPostingRepository($posting, $otherPosting);
 
-    $criteria = new PostingSearchCriteria(createdDates: $posting->getCreatedDate());
+    $criteria = new PostingSearchCriteria(modifiedDates: $posting->getModifiedDate());
     $results = $repository->searchPostings($criteria);
     expect(iterator_to_array($results))->toBe([$posting]);
 });
 
-it('searches by created date range', function () {
+it('searches by modified date range', function () {
     $min = new DateTime('-2 days');
     $max = new DateTime;
 
-    $posting = $this->factory->create(createdDate: new DateTime('-1 day'));
-    $otherPosting = $this->factory->create(createdDate: new DateTime('-4 days'));
+    $posting = $this->factory->create(modifiedDate: new DateTime('-1 day'));
+    $otherPosting = $this->factory->create(modifiedDate: new DateTime('-4 days'));
     $repository = new ArrayPostingRepository($posting, $otherPosting);
 
-    $createdDates = new DateRange($min, $max);
-    $criteria = new PostingSearchCriteria(createdDates: $createdDates);
+    $modifiedDates = new DateRange($min, $max);
+    $criteria = new PostingSearchCriteria(modifiedDates: $modifiedDates);
     $results = $repository->searchPostings($criteria);
     expect(iterator_to_array($results))->toBe([$posting]);
 });

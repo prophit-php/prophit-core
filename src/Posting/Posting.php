@@ -12,7 +12,7 @@ class Posting
         private string $id,
         private Account $account,
         private Money $amount,
-        private DateTimeInterface $createdDate,
+        private DateTimeInterface $modifiedDate,
         private ?DateTimeInterface $clearedDate = null,
     ) { }
 
@@ -31,9 +31,9 @@ class Posting
         return $this->amount;
     }
 
-    public function getCreatedDate(): DateTimeInterface
+    public function getModifiedDate(): DateTimeInterface
     {
-        return $this->createdDate;
+        return $this->modifiedDate;
     }
 
     public function getClearedDate(): ?DateTimeInterface

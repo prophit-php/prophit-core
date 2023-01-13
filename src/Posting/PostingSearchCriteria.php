@@ -21,7 +21,7 @@ class PostingSearchCriteria
         private ?array $ids = null,
         private ?AccountIterator $accounts = null,
         private Money|MoneyRange|null $amounts = null,
-        private DateTimeInterface|DateRange|null $createdDates = null,
+        private DateTimeInterface|DateRange|null $modifiedDates = null,
         private DateTimeInterface|DateRange|null $clearedDates = null,
     ) { }
 
@@ -43,9 +43,9 @@ class PostingSearchCriteria
         return $this->amounts;
     }
 
-    public function getCreatedDates(): DateTimeInterface|DateRange|null
+    public function getModifiedDates(): DateTimeInterface|DateRange|null
     {
-        return $this->createdDates;
+        return $this->modifiedDates;
     }
 
     public function getClearedDates(): DateTimeInterface|DateRange|null

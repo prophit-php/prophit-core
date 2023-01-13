@@ -37,7 +37,7 @@ class PostingFactory
         ?string $id = null,
         ?Account $account = null,
         ?Money $amount = null,
-        ?DateTimeInterface $createdDate = null,
+        ?DateTimeInterface $modifiedDate = null,
         ?DateTimeInterface $clearedDate = null,
     ): Posting {
         if ($id === null) {
@@ -49,14 +49,14 @@ class PostingFactory
         if ($amount === null) {
             $amount = Money::of($this->lastId, 'USD');
         }
-        if ($createdDate === null) {
-            $createdDate = $this->faker->dateTime();
+        if ($modifiedDate === null) {
+            $modifiedDate = $this->faker->dateTime();
         }
         return new Posting(
             $id,
             $account,
             $amount,
-            $createdDate,
+            $modifiedDate,
             $clearedDate,
         );
     }

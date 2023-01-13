@@ -49,7 +49,7 @@ class ArrayPostingRepository implements PostingRepository
                 fn($postings) => $this->filterPostingsById($postings, $criteria->getIds()),
                 fn($postings) => $this->filterPostingsByAccounts($postings, $criteria->getAccounts()),
                 fn($postings) => $this->filterPostingsByAmounts($postings, $criteria->getAmounts()),
-                fn($postings) => $this->filterPostingsByCreatedDates($postings, $criteria->getCreatedDates()),
+                fn($postings) => $this->filterPostingsByModifiedDates($postings, $criteria->getModifiedDates()),
                 fn($postings) => $this->filterPostingsByClearedDates($postings, $criteria->getClearedDates()),
             ],
             fn(array $postings, callable $callback) => $callback($postings),
@@ -135,15 +135,15 @@ class ArrayPostingRepository implements PostingRepository
 
     /**
      * @param Posting[] $postings
-     * @param DateTimeInterface|DateRange|null $createdDates
+     * @param DateTimeInterface|DateRange|null $modifiedDates
      * @return Posting[]
      */
-    private function filterPostingsByCreatedDates(array $postings, DateTimeInterface|DateRange|null $createdDates): array
+    private function filterPostingsByModifiedDates(array $postings, DateTimeInterface|DateRange|null $modifiedDates): array
     {
         return $this->filterPostingsByDates(
             $postings,
-            fn(Posting $posting): DateTimeInterface => $posting->getCreatedDate(),
-            $createdDates,
+            fn(Posting $posting): DateTimeInterface => $posting->getModifiedDate(),
+            $modifiedDates,
         );
     }
 

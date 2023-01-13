@@ -2,6 +2,8 @@
 
 namespace Prophit\Core\Tests\Account;
 
+use DateTimeInterface;
+
 use Faker\{
     Factory,
     Generator,
@@ -24,6 +26,7 @@ class AccountFactory
     public function create(
         ?string $id = null,
         ?string $name = null,
+        ?DateTimeInterface $modifiedDate = null,
     ): Account {
         if ($id === null) {
             $id = (string) ++$this->lastId;
@@ -35,7 +38,11 @@ class AccountFactory
             $name = ucfirst($randomName);
         }
 
-        return new Account($id, $name);
+        if ($modifiedDate === null) {
+            $modifiedDate = $this->faker->dateTime();
+        }
+
+        return new Account($id, $name, $modifiedDate);
     }
 
     /**

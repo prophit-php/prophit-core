@@ -31,10 +31,10 @@ it('gets amount', function () {
     expect($posting->getAmount())->toBe($amount);
 });
 
-it('gets created date', function () {
-    $createdDate = new DateTime;
-    $posting = $this->factory->create(createdDate: $createdDate);
-    expect($posting->getCreatedDate())->toBe($createdDate);
+it('gets modified date', function () {
+    $modifiedDate = new DateTime;
+    $posting = $this->factory->create(modifiedDate: $modifiedDate);
+    expect($posting->getModifiedDate())->toBe($modifiedDate);
 });
 
 it('gets cleared date', function () {

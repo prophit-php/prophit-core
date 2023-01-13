@@ -21,6 +21,12 @@ it('gets name', function () {
     expect($account->getName())->toBe($name);
 });
 
+it('gets modified date', function () {
+    $modifiedDate = new DateTime;
+    $account = $this->factory->create(modifiedDate: $modifiedDate);
+    expect($account->getModifiedDate())->toBe($modifiedDate);
+});
+
 it('is same', function () {
     $account = $this->factory->create();
     expect($account->isSame($account))->toBeTrue();
