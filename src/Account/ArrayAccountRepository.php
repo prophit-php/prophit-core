@@ -30,47 +30,25 @@ class ArrayAccountRepository implements AccountRepository
         return $this->accounts[$id];
     }
 
-    public function getAllAccounts(): AccountIterator
+    public function getAllAccounts(): iterable
     {
-        return new AccountIterator(...$this->accounts);
+        foreach ($this->accounts as $account) {
+            yield $account;
+        }
     }
 
-    public function searchAccounts(AccountSearchCriteria $criteria): AccountIterator
+    public function searchAccounts(AccountSearchCriteria $criteria): iterable
     {
-        $accounts = array_reduce(
-            [
-                fn($accounts) => $this->filterAccountsById($accounts, $criteria->getIds()),
-                fn($accounts) => $this->filterAccountsByName($accounts, $criteria->getName()),
-            ],
-            fn(array $accounts, callable $callback) => $callback($accounts),
-            $this->accounts,
-        );
-        return new AccountIterator(...$accounts);
-    }
-
-    /**
-     * @param Account[] $accounts
-     * @param string[]|null $ids
-     * @return Account[]
-     */
-    private function filterAccountsById(array $accounts, ?array $ids): array
-    {
-        return $ids === null ? $accounts :array_filter(
-            $accounts,
-            fn(Account $account): bool => in_array($account->getId(), $ids),
-        );
-    }
-
-    /**
-     * @param Account[] $accounts
-     * @param string|null $name
-     * @return Account[]
-     */
-    private function filterAccountsByName(array $accounts, ?string $name): array
-    {
-        return $name === null ? $accounts : array_filter(
-            $accounts,
-            fn(Account $account): bool => $account->getName() === $name,
-        );
+        $ids = $criteria->getIds();
+        $name = $criteria->getName();
+        foreach ($this->accounts as $account) {
+            if (
+                (is_array($ids) && in_array($account->getId(), $ids)) ||
+                (is_string($name) && stripos($account->getName(), $name) !== false) ||
+                ($ids === null && $name === null)
+            ) {
+                yield $account;
+            }
+        }
     }
 }

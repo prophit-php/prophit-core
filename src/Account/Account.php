@@ -11,8 +11,7 @@ class Account
     public function __construct(
         private string $id,
         private string $name,
-        private DateTimeInterface $modifiedDate,
-        private User $modifiedUser,
+        private string $currency,
     ) { }
 
     public function getId(): string
@@ -25,14 +24,9 @@ class Account
         return $this->name;
     }
 
-    public function getModifiedDate(): DateTimeInterface
+    public function getCurrency(): string
     {
-        return $this->modifiedDate;
-    }
-
-    public function getModifiedUser(): User
-    {
-        return $this->modifiedUser;
+        return $this->currency;
     }
 
     public function isSame(self $account): bool

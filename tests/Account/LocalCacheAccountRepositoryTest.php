@@ -2,7 +2,6 @@
 
 use Prophit\Core\Account\{
     Account,
-    AccountIterator,
     AccountRepository,
     AccountSearchCriteria,
     LocalCacheAccountRepository,
@@ -24,13 +23,13 @@ class TestAccountRepository implements AccountRepository
         $this->gotAccount = true;
         return $this->gottenAccount;
     }
-    public function getAllAccounts(): AccountIterator {
+    public function getAllAccounts(): iterable {
         $this->gotAllAccounts++;
-        return new AccountIterator($this->gottenAccount);
+        yield $this->gottenAccount;
     }
-    public function searchAccounts(AccountSearchCriteria $criteria): AccountIterator {
+    public function searchAccounts(AccountSearchCriteria $criteria): iterable {
         $this->searchedAccounts = true;
-        return new AccountIterator($this->gottenAccount);
+        yield $this->gottenAccount;
     }
 }
 
@@ -65,29 +64,9 @@ it('proxies fetching all accounts to the repository', function () {
     expect($this->repository->gotAllAccounts)->toBe(1);
 });
 
-it('does not proxy to the repository when searching for cached accounts', function () {
-    $account = $this->cache->getAccountById($this->account->getId());
-    $criteria = new AccountSearchCriteria([$this->account->getId()]);
-    $results = $this->cache->searchAccounts($criteria);
-    expect(iterator_to_array($results))->toBe([$this->account]);
-    expect($this->repository->searchedAccounts)->toBeFalse();
-});
-
-it('proxies to the repository when searching for uncached accounts', function () {
+it('proxies to the repository when searching', function () {
     $criteria = new AccountSearchCriteria([$this->account->getId()]);
     $results = $this->cache->searchAccounts($criteria);
     expect(iterator_to_array($results))->toBe([$this->account]);
     expect($this->repository->searchedAccounts)->toBeTrue();
 });
-
-it('does not proxy to the repository when all accounts have been fetched', function (AccountSearchCriteria $criteria) {
-    $accounts = $this->cache->getAllAccounts();
-    expect($this->repository->gotAllAccounts)->toBe(1);
-    $results = $this->cache->searchAccounts($criteria);
-    expect($results)->toEqual($accounts);
-    expect($this->repository->searchedAccounts)->toBeFalse();
-    expect($this->repository->gotAllAccounts)->toBe(1);
-})->with([
-    'name search' => new AccountSearchCriteria(name: 'Test'),
-    'empty search' => new AccountSearchCriteria,
-]);

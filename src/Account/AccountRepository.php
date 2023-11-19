@@ -13,7 +13,13 @@ interface AccountRepository
      */
     public function getAccountById(string $id): Account;
 
-    public function getAllAccounts(): AccountIterator;
+    /**
+     * @return iterable<Account>
+     */
+    public function getAllAccounts(): iterable;
 
-    public function searchAccounts(AccountSearchCriteria $criteria): AccountIterator;
+    /**
+     * @return iterable<Account>
+     */
+    public function searchAccounts(AccountSearchCriteria $criteria): iterable;
 }

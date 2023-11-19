@@ -23,16 +23,10 @@ it('gets name', function () {
     expect($account->getName())->toBe($name);
 });
 
-it('gets modified date', function () {
-    $modifiedDate = new DateTime;
-    $account = $this->factory->create(modifiedDate: $modifiedDate);
-    expect($account->getModifiedDate())->toBe($modifiedDate);
-});
-
-it('gets modified user', function () {
-    $modifiedUser = (new UserFactory)->create();
-    $account = $this->factory->create(modifiedUser: $modifiedUser);
-    expect($account->getModifiedUser())->toBe($modifiedUser);
+it('gets currency', function () {
+    $currency = 'USD';
+    $account = $this->factory->create(currency: $currency);
+    expect($account->getCurrency())->toBe($currency);
 });
 
 it('is same', function () {

@@ -67,11 +67,12 @@ it('searches accounts by name', function () {
     $accounts = [
         $this->factory->create(name: 'Foo'),
         $this->factory->create(name: 'Foobar'),
+        $this->factory->create(name: 'Barfoo'),
         $this->factory->create(name: 'Bar'),
     ];
     $repository = new ArrayAccountRepository(...$accounts);
 
-    $expectedAccounts = [ $accounts[0] ];
+    $expectedAccounts = array_slice($accounts, 0, 3);
     $criteria = new AccountSearchCriteria(
         name: $accounts[0]->getName(),
     );
@@ -85,17 +86,13 @@ it('searches accounts by multiple criteria', function () {
     $accounts = [
         $this->factory->create(name: 'Foo'),
         $this->factory->create(name: 'Bar'),
+        $this->factory->create(name: 'Baz'),
     ];
     $repository = new ArrayAccountRepository(...$accounts);
 
-    $expectedAccounts = [
-        $accounts[0],
-    ];
+    $expectedAccounts = array_slice($accounts, 0, 2);
     $criteria = new AccountSearchCriteria(
-        ids: [
-            $accounts[0]->getId(),
-            $accounts[1]->getId(),
-        ],
+        ids: [ $accounts[1]->getId() ],
         name: 'Foo',
     );
     $actualAccounts = iterator_to_array(

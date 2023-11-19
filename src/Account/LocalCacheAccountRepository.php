@@ -22,54 +22,29 @@ class LocalCacheAccountRepository implements AccountRepository
     public function getAccountById(string $id): Account
     {
         if (!isset($this->accounts[$id])) {
-            $this->accounts[$id] = $this->repository->getAccountById($id);
+            return $this->accounts[$id] = $this->repository->getAccountById($id);
         }
         return $this->accounts[$id];
     }
 
-    public function getAllAccounts(): AccountIterator
+    public function getAllAccounts(): iterable
     {
-        if (!$this->haveAllAccounts) {
+        if ($this->haveAllAccounts) {
+            foreach ($this->accounts as $account) {
+                yield $account;
+            }
+        } else {
             foreach ($this->repository->getAllAccounts() as $account) {
-                $this->accounts[$account->getId()] = $account;
+                yield $this->accounts[$account->getId()] = $account;
             }
             $this->haveAllAccounts = true;
         }
-        return new AccountIterator(...$this->accounts);
     }
 
-    public function searchAccounts(AccountSearchCriteria $criteria): AccountIterator
+    public function searchAccounts(AccountSearchCriteria $criteria): iterable
     {
-        $ids = $criteria->getIds();
-        if ($ids !== null) {
-            $cachedIds = array_filter($ids, fn(string $id): bool => isset($this->accounts[$id]));
-            if ($ids === $cachedIds) {
-                $accounts = array_map(fn(string $id): Account => $this->accounts[$id], $ids);
-                return new AccountIterator(...$accounts);
-            }
+        foreach ($this->repository->searchAccounts($criteria) as $account) {
+            yield $this->accounts[$account->getId()] = $account;
         }
-
-        if ($this->haveAllAccounts) {
-            $name = $criteria->getName();
-            if ($name !== null) {
-                $accounts = array_filter(
-                    $this->accounts,
-                    fn(Account $account): bool => $this->hasMatchingName($account, $name),
-                );
-                return new AccountIterator(...$accounts);
-            }
-            return new AccountIterator(...$this->accounts);
-        }
-
-        $accounts = $this->repository->searchAccounts($criteria);
-        foreach ($accounts as $account) {
-            $this->accounts[$account->getId()] = $account;
-        }
-        return new AccountIterator(...$accounts);
-    }
-
-    protected function hasMatchingName(Account $account, string $name): bool
-    {
-        return stripos($account->getName(), $name) !== false;
     }
 }
