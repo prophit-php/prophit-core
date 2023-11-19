@@ -26,4 +26,5 @@ it('contains a given value', function () {
     expect((new MoneyRange($min, $max))->contains($med))->toBeTrue();
     expect((new MoneyRange($med, $max))->contains($min))->toBeFalse();
     expect((new MoneyRange($min, $med))->contains($max))->toBeFalse();
+    expect((new MoneyRange($med, $med))->contains($med))->toBeTrue();
 });
