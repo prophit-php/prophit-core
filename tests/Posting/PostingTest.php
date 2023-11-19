@@ -1,7 +1,6 @@
 <?php
 
 use Prophit\Core\{
-    Account\Account,
     Money\Money,
     Posting\Posting,
     Tests\Account\AccountFactory,
@@ -28,12 +27,6 @@ it('gets amount', function () {
     $amount = new Money(100, 'USD');
     $posting = $this->factory->create(amount: $amount);
     expect($posting->getAmount())->toBe($amount);
-});
-
-it('gets modified date', function () {
-    $modifiedDate = new DateTime;
-    $posting = $this->factory->create(modifiedDate: $modifiedDate);
-    expect($posting->getModifiedDate())->toBe($modifiedDate);
 });
 
 it('gets cleared date', function () {

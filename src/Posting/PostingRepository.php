@@ -13,5 +13,8 @@ interface PostingRepository
      */
     public function getPostingById(string $id): Posting;
 
-    public function searchPostings(PostingSearchCriteria $criteria): PostingIterator;
+    /**
+     * @return iterable<Posting>
+     */
+    public function searchPostings(PostingSearchCriteria $criteria): iterable;
 }

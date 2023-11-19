@@ -7,7 +7,6 @@ use DateTimeInterface;
 use Prophit\Core\{
     Account\Account,
     Money\Money,
-    User\User,
 };
 
 class Posting
@@ -16,8 +15,6 @@ class Posting
         private string $id,
         private Account $account,
         private Money $amount,
-        private DateTimeInterface $modifiedDate,
-        private User $modifiedUser,
         private ?DateTimeInterface $clearedDate = null,
     ) { }
 
@@ -34,16 +31,6 @@ class Posting
     public function getAmount(): Money
     {
         return $this->amount;
-    }
-
-    public function getModifiedDate(): DateTimeInterface
-    {
-        return $this->modifiedDate;
-    }
-
-    public function getModifiedUser(): User
-    {
-        return $this->modifiedUser;
     }
 
     public function getClearedDate(): ?DateTimeInterface

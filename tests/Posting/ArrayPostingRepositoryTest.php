@@ -2,7 +2,6 @@
 
 use Prophit\Core\{
     Account\Account,
-    Account\AccountIterator,
     Date\DateRange,
     Exception\PostingNotFoundException,
     Money\Money,
@@ -53,11 +52,11 @@ it('searches by account', function () {
     [$posting, $otherPosting] = $this->factory->count(2);
     $repository = new ArrayPostingRepository($posting, $otherPosting);
 
-    $criteria = new PostingSearchCriteria(accounts: new AccountIterator($posting->getAccount()));
+    $criteria = new PostingSearchCriteria(accountIds: [ $posting->getAccount()->getId() ]);
     $results = $repository->searchPostings($criteria);
     expect(iterator_to_array($results))->toBe([$posting]);
 
-    $criteria = new PostingSearchCriteria(accounts: new AccountIterator($otherPosting->getAccount()));
+    $criteria = new PostingSearchCriteria(accountIds: [ $otherPosting->getAccount()->getId() ]);
     $results = $repository->searchPostings($criteria);
     expect(iterator_to_array($results))->toBe([$otherPosting]);
 });
@@ -80,30 +79,6 @@ it('searches by amount range', function () {
 
     $amounts = new MoneyRange(new Money(1, 'USD'), new Money(3, 'USD'));
     $criteria = new PostingSearchCriteria(amounts: $amounts);
-    $results = $repository->searchPostings($criteria);
-    expect(iterator_to_array($results))->toBe([$posting]);
-});
-
-it('searches by single modified date', function () {
-    $posting = $this->factory->create();
-    $otherPosting = $this->factory->create(modifiedDate: new DateTime('-1 day'));
-    $repository = new ArrayPostingRepository($posting, $otherPosting);
-
-    $criteria = new PostingSearchCriteria(modifiedDates: $posting->getModifiedDate());
-    $results = $repository->searchPostings($criteria);
-    expect(iterator_to_array($results))->toBe([$posting]);
-});
-
-it('searches by modified date range', function () {
-    $min = new DateTime('-2 days');
-    $max = new DateTime;
-
-    $posting = $this->factory->create(modifiedDate: new DateTime('-1 day'));
-    $otherPosting = $this->factory->create(modifiedDate: new DateTime('-4 days'));
-    $repository = new ArrayPostingRepository($posting, $otherPosting);
-
-    $modifiedDates = new DateRange($min, $max);
-    $criteria = new PostingSearchCriteria(modifiedDates: $modifiedDates);
     $results = $repository->searchPostings($criteria);
     expect(iterator_to_array($results))->toBe([$posting]);
 });

@@ -5,7 +5,6 @@ namespace Prophit\Core\Posting;
 use DateTimeInterface;
 
 use Prophit\Core\{
-    Account\AccountIterator,
     Date\DateRange,
     Money\Money,
     Money\MoneyRange,
@@ -15,12 +14,12 @@ class PostingSearchCriteria
 {
     /**
      * @param string[]|null $ids
+     * @param string[]|null $accountIds
      */
     public function __construct(
         private ?array $ids = null,
-        private ?AccountIterator $accounts = null,
+        private ?array $accountIds = null,
         private Money|MoneyRange|null $amounts = null,
-        private DateTimeInterface|DateRange|null $modifiedDates = null,
         private DateTimeInterface|DateRange|null $clearedDates = null,
     ) { }
 
@@ -32,19 +31,17 @@ class PostingSearchCriteria
         return $this->ids;
     }
 
-    public function getAccounts(): ?AccountIterator
+    /**
+     * @return string[]|null
+     */
+    public function getAccountIds(): ?array
     {
-        return $this->accounts;
+        return $this->accountIds;
     }
 
     public function getAmounts(): Money|MoneyRange|null
     {
         return $this->amounts;
-    }
-
-    public function getModifiedDates(): DateTimeInterface|DateRange|null
-    {
-        return $this->modifiedDates;
     }
 
     public function getClearedDates(): DateTimeInterface|DateRange|null
