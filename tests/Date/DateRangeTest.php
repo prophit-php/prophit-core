@@ -23,4 +23,5 @@ it('contains a given date', function () {
     expect((new DateRange($yesterday, $tomorrow))->contains($today))->toBeTrue();
     expect((new DateRange($today, $tomorrow))->contains($yesterday))->toBeFalse();
     expect((new DateRange($yesterday, $today))->contains($tomorrow))->toBeFalse();
+    expect((new DateRange($today, $today))->contains($today))->toBeTrue();
 });

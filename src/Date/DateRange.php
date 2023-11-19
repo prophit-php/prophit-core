@@ -20,6 +20,7 @@ class DateRange extends DatePeriod
             $start,
             new DateInterval('P1D'),
             $end,
+            DatePeriod::INCLUDE_END_DATE
         );
     }
 
@@ -27,8 +28,9 @@ class DateRange extends DatePeriod
     {
         $timestamp = $date->getTimestamp();
         $isAfterStart = $this->getStartDate()->getTimestamp() <= $timestamp;
+        /** @var DateTimeInterface */
         $endDate = $this->getEndDate();
-        $isBeforeEnd = $endDate === null || $endDate->getTimestamp() >= $timestamp;
+        $isBeforeEnd = $endDate->getTimestamp() >= $timestamp;
         return $isAfterStart && $isBeforeEnd;
     }
 }
