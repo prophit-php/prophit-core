@@ -2,7 +2,6 @@
 
 namespace Prophit\Core\Money;
 
-use Brick\Money\Currency as BrickCurrency;
 use Brick\Money\Money as BrickMoney;
 
 class Money
