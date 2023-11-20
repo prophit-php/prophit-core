@@ -2,10 +2,7 @@
 
 namespace Prophit\Core\Tests\User;
 
-use Faker\{
-    Factory,
-    Generator,
-};
+use function Pest\Faker\fake;
 
 use Prophit\Core\User\{
     SimpleUser,
@@ -14,13 +11,10 @@ use Prophit\Core\User\{
 
 class UserFactory
 {
-    private Generator $faker;
-
     private int $lastId;
 
     public function __construct()
     {
-        $this->faker = Factory::create();
         $this->lastId = 0;
     }
 
@@ -33,7 +27,7 @@ class UserFactory
         }
 
         if ($displayName === null) {
-            $displayName = $this->faker->firstName();
+            $displayName = fake()->firstName();
         }
 
         return new SimpleUser($id, $displayName);

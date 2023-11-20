@@ -24,16 +24,14 @@
         "brick/money": "^0.7.0"
     },
     "require-dev": {
-        "fakerphp/faker": "^1.21",
-        "lukeraymonddowning/pest-plugin-money": "^1.1",
-        "pestphp/pest": "^1.22",
-        "pestphp/pest-plugin-parallel": "^1.2",
+        "pestphp/pest": "^2.0",
+        "pestphp/pest-plugin-faker": "^2.0",
         "phpstan/phpstan": "^1.9",
         "roave/security-advisories": "dev-latest"
     },
     "scripts": {
         "analyze": "phpstan analyze -c phpstan-baseline.neon",
-        "test": "pest"
+        "test": "pest --parallel"
     },
     "config": {
         "allow-plugins": {

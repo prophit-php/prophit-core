@@ -4,22 +4,16 @@ namespace Prophit\Core\Tests\Account;
 
 use DateTimeInterface;
 
-use Faker\{
-    Factory,
-    Generator,
-};
+use function Pest\Faker\fake;
 
 use Prophit\Core\Account\Account;
 
 class AccountFactory
 {
-    private Generator $faker;
-
     private int $lastId;
 
     public function __construct()
     {
-        $this->faker = Factory::create();
         $this->lastId = 0;
     }
 
@@ -31,10 +25,10 @@ class AccountFactory
         $id ??= (string) ++$this->lastId;
         if ($name === null) {
             /** @var string */
-            $randomName = $this->faker->words(rand(1, 3), true);
+            $randomName = fake()->words(rand(1, 3), true);
             $name = ucfirst($randomName);
         }
-        $currency ??= $this->faker->currencyCode();
+        $currency ??= fake()->currencyCode();
         return new Account($id, $name, $currency);
     }
 
