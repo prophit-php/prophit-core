@@ -1,6 +1,6 @@
 <?php
 
-namespace Prophit\Core\Posting;
+namespace Prophit\Core\Transaction;
 
 use DateTimeInterface;
 

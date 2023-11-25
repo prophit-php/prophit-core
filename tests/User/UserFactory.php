@@ -22,14 +22,8 @@ class UserFactory
         ?string $id = null,
         ?string $displayName = null,
     ): User {
-        if ($id === null) {
-            $id = (string) ++$this->lastId;
-        }
-
-        if ($displayName === null) {
-            $displayName = fake()->firstName();
-        }
-
+        $id ??= (string) ++$this->lastId;
+        $displayName ??= fake()->firstName();
         return new SimpleUser($id, $displayName);
     }
 }

@@ -42,13 +42,37 @@ class ArrayAccountRepository implements AccountRepository
         $ids = $criteria->getIds();
         $name = $criteria->getName();
         foreach ($this->accounts as $account) {
-            if (
-                (is_array($ids) && in_array($account->getId(), $ids)) ||
-                (is_string($name) && stripos($account->getName(), $name) !== false) ||
-                ($ids === null && $name === null)
-            ) {
+            if ($this->accountMatches($account, $criteria)) {
                 yield $account;
             }
         }
+    }
+
+    private function accountMatches(
+        Account $account,
+        AccountSearchCriteria $criteria,
+    ): bool {
+        return
+            $this->hasNoCriteria($criteria) ||
+            $this->idsMatch($account, $criteria) ||
+            $this->nameMatches($account, $criteria);
+    }
+
+    private function hasNoCriteria(AccountSearchCriteria $criteria): bool
+    {
+        return $criteria->getIds() === null
+            && $criteria->getName() === null;
+    }
+
+    private function idsMatch(Account $account, AccountSearchCriteria $criteria): bool
+    {
+        $ids = $criteria->getIds();
+        return is_array($ids) && in_array($account->getId(), $ids);
+    }
+
+    private function nameMatches(Account $account, AccountSearchCriteria $criteria): bool
+    {
+        $name = $criteria->getName();
+        return is_string($name) && stripos($account->getName(), $name) !== false;
     }
 }

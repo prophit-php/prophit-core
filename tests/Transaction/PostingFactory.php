@@ -1,6 +1,6 @@
 <?php
 
-namespace Prophit\Core\Tests\Posting;
+namespace Prophit\Core\Tests\Transaction;
 
 use DateTime;
 use DateTimeInterface;
@@ -8,9 +8,11 @@ use DateTimeInterface;
 use Prophit\Core\{
     Account\Account,
     Money\Money,
-    Posting\Posting,
     Tests\Account\AccountFactory,
+    Transaction\Posting,
 };
+
+use function Pest\Faker\fake;
 
 class PostingFactory
 {
@@ -30,15 +32,18 @@ class PostingFactory
         ?Money $amount = null,
         ?DateTimeInterface $clearedDate = null,
     ): Posting {
-        if ($id === null) {
-            $id = (string) ++$this->lastId;
-        }
-        if ($account === null) {
-            $account = $this->accountFactory->create();
-        }
-        if ($amount === null) {
-            $amount = new Money($this->lastId, 'USD');
-        }
+        $id ??= (string) ++$this->lastId;
+
+        $account ??= $this->accountFactory->create();
+
+        $amount ??= new Money($this->lastId, 'USD');
+
+        $clearedDate ??= new DateTime(
+            fake()
+                ->dateTimeBetween('-2 months')
+                ->format('Y-m-d 00:00:00')
+        );
+
         return new Posting(
             $id,
             $account,
