@@ -3,12 +3,10 @@
 namespace Prophit\Core\Tests\Transaction;
 
 use Prophit\Core\{
-    Date\DateRange,
     Transaction\Posting,
     Transaction\Transaction,
 };
 
-use DateInterval;
 use DateTime;
 use DateTimeInterface;
 
@@ -31,25 +29,22 @@ class TransactionFactory
      */
     public function create(
         ?string $id = null,
-        DateTimeInterface|DateRange|null $transactionDates = null,
+        ?DateTimeInterface $transactionDate = null,
         ?array $postings = null,
         ?string $description = null,
     ): Transaction {
         $id ??= (string) ++$this->lastId;
 
-        $transactionDates ??= new DateTime(
+        $transactionDate ??= new DateTime(
             fake()
                 ->dateTimeBetween('-2 months')
                 ->format('Y-m-d 00:00:00')
         );
 
         if ($postings === null) {
-            $clearedBeforeDate = $transactionDates instanceof DateRange
-                ? $transactionDates->getEndDate()
-                : $transactionDates;
             $clearedDate = new DateTime(
                 fake()
-                    ->dateTimeInInterval($clearedBeforeDate->format('Y-m-d'))
+                    ->dateTimeInInterval($transactionDate->format('Y-m-d'))
                     ->format('Y-m-d 00:00:00'),
             );
             $postings = [
@@ -65,7 +60,7 @@ class TransactionFactory
 
         return new Transaction(
             $id,
-            $transactionDates,
+            $transactionDate,
             $postings,
             $description,
         );

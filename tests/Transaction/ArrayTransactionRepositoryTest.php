@@ -61,8 +61,8 @@ it('searches transactions by IDs', function () {
 
 it('searches transactions by transaction date using date', function () {
     $transactions = [
-        $this->transactionFactory->create(transactionDates: new DateTime('-1 day')),
-        $this->transactionFactory->create(transactionDates: new DateTime('+1 day')),
+        $this->transactionFactory->create(transactionDate: new DateTime('-1 day')),
+        $this->transactionFactory->create(transactionDate: new DateTime('+1 day')),
     ];
     $repository = new ArrayTransactionRepository(...$transactions);
 
@@ -78,10 +78,10 @@ it('searches transactions by transaction date using date', function () {
 
 it('searches transactions by transaction date using date range', function () {
     $transactions = [
-        $this->transactionFactory->create(transactionDates: new DateTime('-2 days')),
-        $this->transactionFactory->create(transactionDates: new DateTime('-1 day')),
-        $this->transactionFactory->create(transactionDates: new DateTime('+1 day')),
-        $this->transactionFactory->create(transactionDates: new DateTime('+2 days')),
+        $this->transactionFactory->create(transactionDate: new DateTime('-2 days')),
+        $this->transactionFactory->create(transactionDate: new DateTime('-1 day')),
+        $this->transactionFactory->create(transactionDate: new DateTime('+1 day')),
+        $this->transactionFactory->create(transactionDate: new DateTime('+2 days')),
     ];
     $repository = new ArrayTransactionRepository(...$transactions);
 
