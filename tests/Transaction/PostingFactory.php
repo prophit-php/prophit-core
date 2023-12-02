@@ -10,6 +10,7 @@ use Prophit\Core\{
     Money\Money,
     Tests\Account\AccountFactory,
     Transaction\Posting,
+    Transaction\PostingStatus,
 };
 
 use function Pest\Faker\fake;
@@ -30,6 +31,7 @@ class PostingFactory
         ?string $id = null,
         ?Account $account = null,
         ?Money $amount = null,
+        ?PostingStatus $status = null,
         ?DateTimeInterface $clearedDate = null,
     ): Posting {
         $id ??= (string) ++$this->lastId;
@@ -37,6 +39,8 @@ class PostingFactory
         $account ??= $this->accountFactory->create();
 
         $amount ??= new Money($this->lastId, 'USD');
+
+        $status ??= PostingStatus::Active;
 
         $clearedDate ??= new DateTime(
             fake()
@@ -48,6 +52,7 @@ class PostingFactory
             $id,
             $account,
             $amount,
+            $status,
             $clearedDate,
         );
     }

@@ -4,6 +4,7 @@ use Prophit\Core\{
     Money\Money,
     Tests\Account\AccountFactory,
     Transaction\Posting,
+    Transaction\PostingStatus,
 };
 
 beforeEach(function () {
@@ -14,6 +15,7 @@ beforeEach(function () {
         '1',
         $this->account,
         $this->amount,
+        PostingStatus::Active,
         $this->clearedDate,
     );
 });
@@ -30,6 +32,27 @@ it('gets amount', function () {
     expect($this->posting->getAmount())->toBe($this->amount);
 });
 
+it('gets status', function () {
+    expect($this->posting->getStatus())->toBe(PostingStatus::Active);
+});
+
+it('is active', function () {
+    expect($this->posting->isActive())->toBe(true);
+    expect($this->posting->isDeleted())->toBe(false);
+});
+
+it('is deleted', function () {
+    $posting = new Posting(
+        $this->posting->getId(),
+        $this->posting->getAccount(),
+        $this->posting->getAmount(),
+        PostingStatus::Deleted,
+        $this->posting->getClearedDate(),
+    );
+    expect($posting->isActive())->toBe(false);
+    expect($posting->isDeleted())->toBe(true);
+});
+
 it('gets cleared date', function () {
     expect($this->posting->getClearedDate())->toBe($this->clearedDate);
 });
@@ -43,6 +66,7 @@ it('has not cleared', function () {
         '1',
         $this->account,
         $this->amount,
+        PostingStatus::Active,
     );
     expect($posting->hasCleared())->toBe(false);
 });

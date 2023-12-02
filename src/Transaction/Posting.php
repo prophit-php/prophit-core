@@ -15,6 +15,7 @@ class Posting
         private string $id,
         private Account $account,
         private Money $amount,
+        private PostingStatus $status,
         private ?DateTimeInterface $clearedDate = null,
     ) { }
 
@@ -31,6 +32,21 @@ class Posting
     public function getAmount(): Money
     {
         return $this->amount;
+    }
+
+    public function getStatus(): PostingStatus
+    {
+        return $this->status;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === PostingStatus::Active;
+    }
+
+    public function isDeleted(): bool
+    {
+        return $this->status === PostingStatus::Deleted;
     }
 
     public function getClearedDate(): ?DateTimeInterface
