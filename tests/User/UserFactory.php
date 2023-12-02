@@ -7,6 +7,7 @@ use function Pest\Faker\fake;
 use Prophit\Core\User\{
     SimpleUser,
     User,
+    UserStatus,
 };
 
 class UserFactory
@@ -21,9 +22,11 @@ class UserFactory
     public function create(
         ?string $id = null,
         ?string $displayName = null,
+        ?UserStatus $status = null,
     ): User {
         $id ??= (string) ++$this->lastId;
         $displayName ??= fake()->firstName();
-        return new SimpleUser($id, $displayName);
+        $status ??= UserStatus::Active;
+        return new SimpleUser($id, $displayName, $status);
     }
 }

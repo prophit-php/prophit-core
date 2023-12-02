@@ -7,6 +7,7 @@ class SimpleUser implements User
     public function __construct(
         private string $id,
         private string $displayName,
+        private UserStatus $status,
     ) { }
 
     public function getId(): string
@@ -17,5 +18,25 @@ class SimpleUser implements User
     public function getDisplayName(): string
     {
         return $this->displayName;
+    }
+
+    public function getStatus(): UserStatus
+    {
+        return $this->status;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === UserStatus::Active;
+    }
+
+    public function isDeleted(): bool
+    {
+        return $this->status === UserStatus::Deleted;
+    }
+
+    public function isLocked(): bool
+    {
+        return $this->status === UserStatus::Locked;
     }
 }
