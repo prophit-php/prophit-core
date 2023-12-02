@@ -6,27 +6,34 @@ use DateTimeInterface;
 
 use function Pest\Faker\fake;
 
-use Prophit\Core\Account\{
-    Account,
-    AccountStatus,
+use Prophit\Core\{
+    Account\Account,
+    Account\AccountStatus,
+    Ledger\Ledger,
+    Tests\Ledger\LedgerFactory,
 };
 
 class AccountFactory
 {
+    private LedgerFactory $ledgerFactory;
+
     private int $lastId;
 
-    public function __construct()
+    public function __construct(?LedgerFactory $ledgerFactory = null)
     {
+        $this->ledgerFactory = $ledgerFactory ?? new LedgerFactory;
         $this->lastId = 0;
     }
 
     public function create(
         ?string $id = null,
+        ?Ledger $ledger = null,
         ?string $name = null,
         ?string $currency = null,
         ?AccountStatus $status = null,
     ): Account {
         $id ??= (string) ++$this->lastId;
+        $ledger ??= $this->ledgerFactory->create();
         if ($name === null) {
             /** @var string */
             $randomName = fake()->words(rand(1, 3), true);
@@ -34,7 +41,7 @@ class AccountFactory
         }
         $currency ??= fake()->currencyCode();
         $status ??= AccountStatus::Active;
-        return new Account($id, $name, $currency, $status);
+        return new Account($id, $ledger, $name, $currency, $status);
     }
 
     /**

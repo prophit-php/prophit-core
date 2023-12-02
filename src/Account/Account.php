@@ -2,14 +2,16 @@
 
 namespace Prophit\Core\Account;
 
-use DateTimeInterface;
-
-use Prophit\Core\User\User;
+use Prophit\Core\{
+    Ledger\Ledger,
+    User\User,
+};
 
 class Account
 {
     public function __construct(
         private string $id,
+        private Ledger $ledger,
         private string $name,
         private string $currency,
         private AccountStatus $status,
@@ -18,6 +20,11 @@ class Account
     public function getId(): string
     {
         return $this->id;
+    }
+
+    public function getLedger(): Ledger
+    {
+        return $this->ledger;
     }
 
     public function getName(): string

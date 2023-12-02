@@ -8,41 +8,51 @@ use Prophit\Core\{
     Account\Account,
     Date\DateRange,
     Exception\TransactionNotFoundException,
+    Ledger\Ledger,
     Money\Money,
     Money\MoneyRange,
 };
 
 class ArrayTransactionRepository implements TransactionRepository
 {
-    /** @var array<string, Transaction> */
+    /** @var array<string, array<string, Transaction>> */
     private array $transactions;
 
-    public function __construct(Transaction... $transactions)
+    public function __construct()
     {
         $this->transactions = [];
-        foreach ($transactions as $transaction) {
-            $this->saveTransaction($transaction);
+    }
+
+    public function saveTransaction(
+        Ledger $ledger,
+        Transaction $transaction,
+    ): void {
+        $ledgerId = $ledger->getId();
+        $this->transactions[$ledgerId] ??= [];
+        $this->transactions[$ledgerId][$transaction->getId()] = $transaction;
+    }
+
+    public function getTransactionById(
+        Ledger $ledger,
+        string $transactionId,
+    ): Transaction {
+        $ledgerId = $ledger->getId();
+        if (!isset($this->transactions[$ledgerId][$transactionId])) {
+            throw new TransactionNotFoundException($ledger, $transactionId);
         }
+        return $this->transactions[$ledgerId][$transactionId];
     }
 
-    public function saveTransaction(Transaction $transaction): void
-    {
-        $this->transactions[$transaction->getId()] = $transaction;
-    }
-
-    public function getTransactionById(string $id): Transaction
-    {
-        if (!isset($this->transactions[$id])) {
-            throw new TransactionNotFoundException($id);
-        }
-        return $this->transactions[$id];
-    }
-
-    public function searchTransactions(TransactionSearchCriteria $criteria): iterable
-    {
-        foreach ($this->transactions as $transaction) {
-            if ($this->transactionMatches($transaction, $criteria)) {
-                yield $transaction;
+    public function searchTransactions(
+        Ledger $ledger,
+        TransactionSearchCriteria $criteria,
+    ): iterable {
+        $ledgerId = $ledger->getId();
+        if (!empty($this->transactions[$ledgerId])) {
+            foreach ($this->transactions[$ledgerId] as $transaction) {
+                if ($this->transactionMatches($transaction, $criteria)) {
+                    yield $transaction;
+                }
             }
         }
     }

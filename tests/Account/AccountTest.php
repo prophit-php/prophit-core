@@ -4,6 +4,7 @@ use Prophit\Core\{
     Account\Account,
     Account\AccountStatus,
     Tests\Account\AccountFactory,
+    Tests\Ledger\LedgerFactory,
     Tests\User\UserFactory,
     User\SimpleUser,
 };
@@ -16,6 +17,12 @@ it('gets ID', function () {
     $id = '1';
     $account = $this->factory->create(id: $id);
     expect($account->getId())->toBe($id);
+});
+
+it('gets ledger', function () {
+    $ledger = (new LedgerFactory)->create();
+    $account = $this->factory->create(ledger: $ledger);
+    expect($account->getLedger())->toBe($ledger);
 });
 
 it('gets name', function () {
