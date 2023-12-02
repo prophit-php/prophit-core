@@ -6,7 +6,10 @@ use DateTimeInterface;
 
 use function Pest\Faker\fake;
 
-use Prophit\Core\Account\Account;
+use Prophit\Core\Account\{
+    Account,
+    AccountStatus,
+};
 
 class AccountFactory
 {
@@ -21,6 +24,7 @@ class AccountFactory
         ?string $id = null,
         ?string $name = null,
         ?string $currency = null,
+        ?AccountStatus $status = null,
     ): Account {
         $id ??= (string) ++$this->lastId;
         if ($name === null) {
@@ -29,7 +33,8 @@ class AccountFactory
             $name = ucfirst($randomName);
         }
         $currency ??= fake()->currencyCode();
-        return new Account($id, $name, $currency);
+        $status ??= AccountStatus::Active;
+        return new Account($id, $name, $currency, $status);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 use Prophit\Core\{
     Account\Account,
+    Account\AccountStatus,
     Tests\Account\AccountFactory,
     Tests\User\UserFactory,
     User\SimpleUser,
@@ -27,6 +28,23 @@ it('gets currency', function () {
     $currency = 'USD';
     $account = $this->factory->create(currency: $currency);
     expect($account->getCurrency())->toBe($currency);
+});
+
+it('gets status', function () {
+    $account = $this->factory->create();
+    expect($account->getStatus())->toBe(AccountStatus::Active);
+});
+
+it('is active', function () {
+    $account = $this->factory->create();
+    expect($account->isActive())->toBe(true);
+    expect($account->isDeleted())->toBe(false);
+});
+
+it('is deleted', function () {
+    $account = $this->factory->create(status: AccountStatus::Deleted);
+    expect($account->isActive())->toBe(false);
+    expect($account->isDeleted())->toBe(true);
 });
 
 it('is same', function () {
