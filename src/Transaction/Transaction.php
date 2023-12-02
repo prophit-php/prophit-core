@@ -12,6 +12,7 @@ class Transaction
     public function __construct(
         private string $id,
         private DateTimeInterface $transactionDate,
+        private TransactionStatus $status,
         private array $postings,
         private ?string $description = null,
     ) { }
@@ -24,6 +25,21 @@ class Transaction
     public function getTransactionDate(): DateTimeInterface
     {
         return $this->transactionDate;
+    }
+
+    public function getStatus(): TransactionStatus
+    {
+        return $this->status;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === TransactionStatus::Active;
+    }
+
+    public function isDeleted(): bool
+    {
+        return $this->status === TransactionStatus::Deleted;
     }
 
     /**

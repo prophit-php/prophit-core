@@ -5,6 +5,7 @@ namespace Prophit\Core\Tests\Transaction;
 use Prophit\Core\{
     Transaction\Posting,
     Transaction\Transaction,
+    Transaction\TransactionStatus,
 };
 
 use DateTime;
@@ -30,6 +31,7 @@ class TransactionFactory
     public function create(
         ?string $id = null,
         ?DateTimeInterface $transactionDate = null,
+        ?TransactionStatus $status = null,
         ?array $postings = null,
         ?string $description = null,
     ): Transaction {
@@ -40,6 +42,8 @@ class TransactionFactory
                 ->dateTimeBetween('-2 months')
                 ->format('Y-m-d 00:00:00')
         );
+
+        $status ??= TransactionStatus::Active;
 
         if ($postings === null) {
             $clearedDate = new DateTime(
@@ -61,6 +65,7 @@ class TransactionFactory
         return new Transaction(
             $id,
             $transactionDate,
+            $status,
             $postings,
             $description,
         );
