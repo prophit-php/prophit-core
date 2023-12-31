@@ -7,6 +7,8 @@ use Prophit\Core\{
     Money\Money,
     Money\MoneyRange,
     Transaction\ArrayTransactionRepository,
+    Transaction\PostingStatus,
+    Transaction\TransactionStatus,
     Transaction\Transaction,
     Transaction\TransactionSearchCriteria,
     Tests\Ledger\LedgerFactory,
@@ -57,6 +59,18 @@ it('does not get nonexistent transaction by ID', function () {
     $repository = getArrayTransactionRepository($this->ledger, [$notFoundTransaction]);
     $repository->getTransactionById($this->ledger, '-1');
 })->throws(TransactionNotFoundException::class);
+
+it('searches transactions without criteria', function () {
+    $transactions = [$this->transactionFactory->create()];
+    $repository = getArrayTransactionRepository($this->ledger, $transactions);
+    $criteria = new TransactionSearchCriteria;
+
+    $expectedTransactions = $transactions;
+    $actualTransactions = iterator_to_array(
+        $repository->searchTransactions($this->ledger, $criteria),
+    );
+    expect($expectedTransactions)->toBe($actualTransactions);
+});
 
 it('searches transactions by IDs', function () {
     $transactions = $this->transactionFactory->count(4);
@@ -230,6 +244,53 @@ it('searches transactions by cleared date using date range', function () {
             $transactions[1]->getPostings()[0]->getClearedDate(),
         ),
     );
+    $actualTransactions = iterator_to_array(
+        $repository->searchTransactions($this->ledger, $criteria),
+    );
+    expect($expectedTransactions)->toBe($actualTransactions);
+});
+
+it('searches transactions by transaction status', function () {
+    $transactions = [
+        $this->transactionFactory->create(status: TransactionStatus::Deleted),
+    ];
+    $repository = getArrayTransactionRepository($this->ledger, $transactions);
+
+    $expectedTransactions = [];
+    $criteria = new TransactionSearchCriteria(transactionStatuses: [TransactionStatus::Active]);
+    $actualTransactions = iterator_to_array(
+        $repository->searchTransactions($this->ledger, $criteria),
+    );
+    expect($expectedTransactions)->toBe($actualTransactions);
+
+    $expectedTransactions = $transactions;
+    $criteria = new TransactionSearchCriteria(transactionStatuses: [TransactionStatus::Deleted]);
+    $actualTransactions = iterator_to_array(
+        $repository->searchTransactions($this->ledger, $criteria),
+    );
+    expect($expectedTransactions)->toBe($actualTransactions);
+});
+
+it('searches transactions by posting status', function () {
+    $transactions = [
+        $this->transactionFactory->create(
+            postings: [
+                $this->postingFactory->create(status: PostingStatus::Deleted),
+                $this->postingFactory->create(status: PostingStatus::Deleted),
+            ],
+        ),
+    ];
+    $repository = getArrayTransactionRepository($this->ledger, $transactions);
+
+    $expectedTransactions = [];
+    $criteria = new TransactionSearchCriteria(postingStatuses: [PostingStatus::Active]);
+    $actualTransactions = iterator_to_array(
+        $repository->searchTransactions($this->ledger, $criteria),
+    );
+    expect($expectedTransactions)->toBe($actualTransactions);
+
+    $expectedTransactions = $transactions;
+    $criteria = new TransactionSearchCriteria(postingStatuses: [PostingStatus::Deleted]);
     $actualTransactions = iterator_to_array(
         $repository->searchTransactions($this->ledger, $criteria),
     );

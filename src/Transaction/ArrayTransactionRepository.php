@@ -62,12 +62,14 @@ class ArrayTransactionRepository implements TransactionRepository
         TransactionSearchCriteria $criteria,
     ): bool {
         return
+            !$criteria->hasCriteria() ||
             $this->idsMatch($transaction, $criteria) ||
             $this->transactionDatesMatch($transaction, $criteria) ||
             $this->descriptionMatches($transaction, $criteria) ||
             $this->accountsMatch($transaction, $criteria) ||
             $this->amountsMatch($transaction, $criteria) ||
-            $this->clearedDatesMatch($transaction, $criteria);
+            $this->clearedDatesMatch($transaction, $criteria) ||
+            $this->statusesMatch($transaction, $criteria);
     }
 
     private function idsMatch(
@@ -169,6 +171,29 @@ class ArrayTransactionRepository implements TransactionRepository
         foreach ($transactionClearedDates as $transactionClearedDate) {
             if ($this->dateMatches($transactionClearedDate, $clearedDates)) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    private function statusesMatch(
+        Transaction $transaction,
+        TransactionSearchCriteria $criteria,
+    ): bool {
+        $transactionStatuses = $criteria->getTransactionStatuses();
+        if (
+            is_array($transactionStatuses)
+            && count($transactionStatuses) > 0
+            && in_array($transaction->getStatus(), $transactionStatuses, true)
+        ) {
+            return true;
+        }
+        $postingStatuses = $criteria->getPostingStatuses();
+        if (is_array($postingStatuses) && count($postingStatuses) > 0) {
+            foreach ($transaction->getPostings() as $posting) {
+                if (in_array($posting->getStatus(), $postingStatuses, true)) {
+                    return true;
+                }
             }
         }
         return false;

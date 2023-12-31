@@ -7,6 +7,8 @@ use Prophit\Core\{
     Date\DateRange,
     Money\Money,
     Money\MoneyRange,
+    Transaction\PostingStatus,
+    Transaction\TransactionStatus,
 };
 
 use DateTimeInterface;
@@ -16,6 +18,8 @@ class TransactionSearchCriteria
     /**
      * @param string[]|null $ids
      * @param Account[]|null $accounts
+     * @param PostingStatus[]|null $postingStatuses
+     * @param TransactionStatus[]|null $transactionStatuses
      */
     public function __construct(
         private ?array $ids = null,
@@ -24,6 +28,8 @@ class TransactionSearchCriteria
         private ?array $accounts = null,
         private Money|MoneyRange|null $amounts = null,
         private DateTimeInterface|DateRange|null $clearedDates = null,
+        private ?array $postingStatuses = null,
+        private ?array $transactionStatuses = null,
     ) { }
 
     /**
@@ -60,5 +66,35 @@ class TransactionSearchCriteria
     public function getClearedDates(): DateTimeInterface|DateRange|null
     {
         return $this->clearedDates;
+    }
+
+    /**
+     * @return PostingStatus[]|null
+     */
+    public function getPostingStatuses(): ?array
+    {
+        return $this->postingStatuses;
+    }
+
+    /**
+     * @return TransactionStatus[]|null
+     */
+    public function getTransactionStatuses(): ?array
+    {
+        return $this->transactionStatuses;
+    }
+
+    public function hasCriteria(): bool
+    {
+        return !(
+            $this->ids === null &&
+            $this->transactionDates === null &&
+            $this->description === null &&
+            $this->accounts === null &&
+            $this->amounts === null &&
+            $this->clearedDates === null &&
+            $this->postingStatuses === null &&
+            $this->transactionStatuses === null
+        );
     }
 }
