@@ -32,4 +32,12 @@ class LedgerFactory
         $status ??= LedgerStatus::Active;
         return new Ledger($id, $name, $status);
     }
+
+    /**
+     * @return Ledger[]
+     */
+    public function count(int $count): array
+    {
+        return array_map(fn() => $this->create(), range(1, $count));
+    }
 }
