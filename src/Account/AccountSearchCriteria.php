@@ -22,4 +22,12 @@ class AccountSearchCriteria
     {
         return $this->name;
     }
+
+    public function hasCriteria(): bool
+    {
+        return !(
+            $this->ids === null
+            && $this->name === null
+        );
+    }
 }

@@ -53,15 +53,9 @@ class ArrayAccountRepository implements AccountRepository
         AccountSearchCriteria $criteria,
     ): bool {
         return
-            $this->hasNoCriteria($criteria) ||
+            !$criteria->hasCriteria() ||
             $this->idsMatch($account, $criteria) ||
             $this->nameMatches($account, $criteria);
-    }
-
-    private function hasNoCriteria(AccountSearchCriteria $criteria): bool
-    {
-        return $criteria->getIds() === null
-            && $criteria->getName() === null;
     }
 
     private function idsMatch(Account $account, AccountSearchCriteria $criteria): bool
