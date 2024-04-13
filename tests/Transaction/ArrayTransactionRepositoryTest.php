@@ -238,11 +238,12 @@ it('searches transactions by cleared date using date range', function () {
     $repository = getArrayTransactionRepository($this->ledger, $transactions);
 
     $expectedTransactions = array_slice($transactions, 0, 2);
+    /** @var \DateTimeInterface */
+    $startDate = $transactions[0]->getPostings()[0]->getClearedDate();
+    /** @var \DateTimeInterface */
+    $endDate = $transactions[1]->getPostings()[0]->getClearedDate();
     $criteria = new TransactionSearchCriteria(
-        clearedDates: new DateRange(
-            $transactions[0]->getPostings()[0]->getClearedDate(),
-            $transactions[1]->getPostings()[0]->getClearedDate(),
-        ),
+        clearedDates: new DateRange($startDate, $endDate),
     );
     $actualTransactions = iterator_to_array(
         $repository->searchTransactions($this->ledger, $criteria),
