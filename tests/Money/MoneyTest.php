@@ -17,7 +17,9 @@ it('gets the currency', function () {
 });
 
 it('is equal to', function () {
+    expect($this->mid->isEqualTo($this->less))->toBe(false);
     expect($this->mid->isEqualTo($this->mid))->toBe(true);
+    expect($this->mid->isEqualTo($this->greater))->toBe(false);
 });
 
 it('is greater than', function () {
