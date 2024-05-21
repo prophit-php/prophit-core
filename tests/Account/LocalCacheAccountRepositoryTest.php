@@ -1,13 +1,13 @@
 <?php
 
-use Prophit\Core\Account\{
-    Account,
-    AccountRepository,
-    AccountSearchCriteria,
-    LocalCacheAccountRepository,
+use Prophit\Core\{
+    Account\Account,
+    Account\AccountRepository,
+    Account\AccountSearchCriteria,
+    Account\LocalCacheAccountRepository,
+    Ledger\Ledger,
+    Tests\Account\AccountFactory,
 };
-
-use Prophit\Core\Tests\Account\AccountFactory;
 
 class TestAccountRepository implements AccountRepository
 {
@@ -19,7 +19,7 @@ class TestAccountRepository implements AccountRepository
     public function saveAccount(Account $account): void {
         $this->savedAccount = true;
     }
-    public function getAccountById(string $id): Account {
+    public function getAccountById(Ledger $ledger, string $accountId): Account {
         $this->gotAccount = true;
         return $this->gottenAccount;
     }
@@ -42,14 +42,20 @@ beforeEach(function () {
 
 it('caches saved accounts', function () {
     $this->cache->saveAccount($this->account);
-    $result = $this->cache->getAccountById($this->account->getId());
+    $result = $this->cache->getAccountById(
+        $this->account->getLedger(),
+        $this->account->getId()
+    );
     expect($result)->toBe($this->account);
     expect($this->repository->savedAccount)->toBeTrue();
     expect($this->repository->gotAccount)->toBeFalse();
 });
 
 it('proxies fetches to the repository for uncached accounts', function () {
-    $result = $this->cache->getAccountById($this->account->getId());
+    $result = $this->cache->getAccountById(
+        $this->account->getLedger(),
+        $this->account->getId()
+    );
     expect($result)->toBe($this->account);
     expect($this->repository->gotAccount)->toBeTrue();
 });

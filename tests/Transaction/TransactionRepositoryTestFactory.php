@@ -6,18 +6,18 @@ use DateTime;
 
 use Prophit\Core\{
     Date\DateRange,
-    Exception\TransactionNotFoundException,
     Ledger\Ledger,
     Money\Money,
     Money\MoneyRange,
-    Transaction\PostingStatus,
-    Transaction\TransactionRepository,
-    Transaction\TransactionStatus,
-    Transaction\Transaction,
-    Transaction\TransactionSearchCriteria,
     Tests\Ledger\LedgerFactory,
     Tests\Transaction\PostingFactory,
     Tests\Transaction\TransactionFactory,
+    Transaction\PostingStatus,
+    Transaction\Transaction,
+    Transaction\TransactionException,
+    Transaction\TransactionRepository,
+    Transaction\TransactionStatus,
+    Transaction\TransactionSearchCriteria,
 };
 
 class TransactionRepositoryTestFactory
@@ -76,7 +76,7 @@ class TransactionRepositoryTestFactory
             $notFoundTransaction = $transactionFactory->create();
             $repository = $getTransactionRepository([$notFoundTransaction]);
             $repository->getTransactionById($ledger, '-1');
-        })->throws(TransactionNotFoundException::class);
+        })->throws(TransactionException::class);
 
         it('searches transactions without criteria', function () use ($ledger, $transactionFactory, $getTransactionRepository) {
             $transactions = [$transactionFactory->create()];

@@ -7,7 +7,6 @@ use DateTimeInterface;
 use Prophit\Core\{
     Account\Account,
     Date\DateRange,
-    Exception\TransactionNotFoundException,
     Ledger\Ledger,
     Money\Money,
     Money\MoneyRange,
@@ -38,7 +37,7 @@ class ArrayTransactionRepository implements TransactionRepository
     ): Transaction {
         $ledgerId = $ledger->getId();
         if (!isset($this->transactions[$ledgerId][$transactionId])) {
-            throw new TransactionNotFoundException($ledger, $transactionId);
+            throw TransactionException::transactionNotFound($ledger, $transactionId);
         }
         return $this->transactions[$ledgerId][$transactionId];
     }

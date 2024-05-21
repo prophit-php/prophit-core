@@ -2,10 +2,7 @@
 
 namespace Prophit\Core\Transaction;
 
-use Prophit\Core\{
-    Exception\TransactionNotFoundException,
-    Ledger\Ledger,
-};
+use Prophit\Core\Ledger\Ledger;
 
 interface TransactionRepository
 {
@@ -15,7 +12,7 @@ interface TransactionRepository
     ): void;
 
     /**
-     * @throws TransactionNotFoundException if transaction is not found
+     * @throws TransactionException if transaction is not found
      */
     public function getTransactionById(
         Ledger $ledger,

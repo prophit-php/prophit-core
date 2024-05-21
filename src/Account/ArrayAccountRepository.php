@@ -2,11 +2,15 @@
 
 namespace Prophit\Core\Account;
 
-use Prophit\Core\Exception\AccountNotFoundException;
+use Prophit\Core\Ledger\Ledger;
 
 class ArrayAccountRepository implements AccountRepository
 {
-    /** @var array<string, Account> **/
+    /**
+     * Mapping of accounts indexed by ledger and account IDs
+     *
+     * @var array<string, array<string, Account>>
+     */
     private array $accounts;
 
     public function __construct(Account... $accounts)
@@ -19,21 +23,26 @@ class ArrayAccountRepository implements AccountRepository
 
     public function saveAccount(Account $account): void
     {
-        $this->accounts[$account->getId()] = $account;
+        $ledgerId = $account->getLedger()->getId();
+        $accountId = $account->getId();
+        $this->accounts[$ledgerId][$accountId] = $account;
     }
 
-    public function getAccountById(string $id): Account
+    public function getAccountById(Ledger $ledger, string $accountId): Account
     {
-        if (!isset($this->accounts[$id])) {
-            throw new AccountNotFoundException($id);
+        $ledgerId = $ledger->getId();
+        if (!isset($this->accounts[$ledgerId][$accountId])) {
+            throw AccountException::accountNotFound($ledger, $accountId);
         }
-        return $this->accounts[$id];
+        return $this->accounts[$ledgerId][$accountId];
     }
 
     public function getAllAccounts(): iterable
     {
-        foreach ($this->accounts as $account) {
-            yield $account;
+        foreach ($this->accounts as $ledgerId => $accounts) {
+            foreach ($accounts as $account) {
+                yield $account;
+            }
         }
     }
 
@@ -41,9 +50,11 @@ class ArrayAccountRepository implements AccountRepository
     {
         $ids = $criteria->getIds();
         $name = $criteria->getName();
-        foreach ($this->accounts as $account) {
-            if ($this->accountMatches($account, $criteria)) {
-                yield $account;
+        foreach ($this->accounts as $ledgerId => $accounts) {
+            foreach ($accounts as $account) {
+                if ($this->accountMatches($account, $criteria)) {
+                    yield $account;
+                }
             }
         }
     }

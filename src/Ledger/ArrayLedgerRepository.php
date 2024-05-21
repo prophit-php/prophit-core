@@ -2,8 +2,6 @@
 
 namespace Prophit\Core\Ledger;
 
-use Prophit\Core\Exception\LedgerNotFoundException;
-
 class ArrayLedgerRepository implements LedgerRepository
 {
     /** @var array<string, Ledger> **/
@@ -25,7 +23,7 @@ class ArrayLedgerRepository implements LedgerRepository
     public function getLedgerById(string $id): Ledger
     {
         if (!isset($this->ledgers[$id])) {
-            throw new LedgerNotFoundException($id);
+            throw LedgerException::ledgerNotFound($id);
         }
         return $this->ledgers[$id];
     }

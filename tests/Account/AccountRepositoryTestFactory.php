@@ -4,9 +4,9 @@ namespace Prophit\Core\Tests\Account;
 
 use Prophit\Core\{
     Account\Account,
-    Account\AccountSearchCriteria,
+    Account\AccountException,
     Account\AccountRepository,
-    Exception\AccountNotFoundException,
+    Account\AccountSearchCriteria,
     Tests\Account\AccountFactory,
 };
 
@@ -35,7 +35,10 @@ class AccountRepositoryTestFactory
             $repository->saveAccount($account);
 
             $expectedAccount = $account;
-            $actualAccount = $repository->getAccountById($account->getId());
+            $actualAccount = $repository->getAccountById(
+                $account->getLedger(),
+                $account->getId()
+            );
             expect($expectedAccount)->toBe($actualAccount);
         });
 
@@ -45,7 +48,10 @@ class AccountRepositoryTestFactory
             $repository = new $fqcn(...$accounts);
 
             $expectedAccount = $foundAccount;
-            $actualAccount = $repository->getAccountById($expectedAccount->getId());
+            $actualAccount = $repository->getAccountById(
+                $expectedAccount->getLedger(),
+                $expectedAccount->getId()
+            );
             expect($expectedAccount)->toBe($actualAccount);
         });
 
@@ -53,8 +59,8 @@ class AccountRepositoryTestFactory
             $notFoundAccount = $factory->create();
             /** @var AccountRepository */
             $repository = new $fqcn($notFoundAccount);
-            $repository->getAccountById('-1');
-        })->throws(AccountNotFoundException::class);
+            $repository->getAccountById($notFoundAccount->getLedger(), '-1');
+        })->throws(AccountException::class);
 
         it('gets all accounts', function () use ($fqcn, $factory) {
             $accounts = $factory->count(2);

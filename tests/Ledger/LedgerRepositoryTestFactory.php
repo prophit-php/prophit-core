@@ -4,8 +4,8 @@ namespace Prophit\Core\Tests\Ledger;
 
 use Prophit\Core\{
     Ledger\Ledger,
+    Ledger\LedgerException,
     Ledger\LedgerRepository,
-    Exception\LedgerNotFoundException,
     Tests\Ledger\LedgerFactory,
 };
 
@@ -53,7 +53,7 @@ class LedgerRepositoryTestFactory
             /** @var LedgerRepository */
             $repository = new $fqcn($notFoundLedger);
             $repository->getLedgerById('-1');
-        })->throws(LedgerNotFoundException::class);
+        })->throws(LedgerException::class);
 
         it('gets all ledgers', function () use ($fqcn, $factory) {
             $ledgers = $factory->count(2);
