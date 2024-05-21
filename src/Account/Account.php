@@ -2,10 +2,7 @@
 
 namespace Prophit\Core\Account;
 
-use Prophit\Core\{
-    Ledger\Ledger,
-    User\User,
-};
+use Prophit\Core\Ledger\Ledger;
 
 class Account
 {
