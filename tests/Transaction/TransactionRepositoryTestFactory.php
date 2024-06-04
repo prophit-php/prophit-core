@@ -9,6 +9,7 @@ use Prophit\Core\{
     Ledger\Ledger,
     Money\Money,
     Money\MoneyRange,
+    Tests\Account\AccountFactory,
     Tests\Ledger\LedgerFactory,
     Tests\Transaction\PostingFactory,
     Tests\Transaction\TransactionFactory,
@@ -35,7 +36,8 @@ class TransactionRepositoryTestFactory
             throw TransactionRepositoryTestFactoryException::classMissingInterface($fqcn);
         }
 
-        $ledger = (new LedgerFactory)->create();
+        $ledgerFactory = new LedgerFactory;
+        $ledger = $ledgerFactory->create();
         $postingFactory = new PostingFactory;
         $transactionFactory = new TransactionFactory;
 
@@ -175,6 +177,41 @@ class TransactionRepositoryTestFactory
                     $transactions[0]->getPostings()[0]->getAccount(),
                     $transactions[1]->getPostings()[0]->getAccount(),
                 ],
+            );
+            $actualTransactions = iterator_to_array(
+                $repository->searchTransactions($ledger, $criteria),
+            );
+            expect($expectedTransactions)->toBe($actualTransactions);
+        });
+
+        it('searches transactions by ledger', function () use (
+            $ledgerFactory,
+            $ledger,
+            $transactionFactory,
+            $postingFactory,
+            $getTransactionRepository
+        ) {
+            $otherLedger = $ledgerFactory->create();
+            $accountFactory = new AccountFactory;
+            $ledgerAccount = $accountFactory->create(ledger: $ledger);
+            $otherLedgerAccount = $accountFactory->create(ledger: $otherLedger);
+            $ledgerPostings = [
+                $postingFactory->create(account: $ledgerAccount),
+                $postingFactory->create(account: $ledgerAccount),
+            ];
+            $otherLedgerPostings = [
+                $postingFactory->create(account: $otherLedgerAccount),
+                $postingFactory->create(account: $otherLedgerAccount),
+            ];
+            $transactions = [
+                $transactionFactory->create(postings: $ledgerPostings),
+                $transactionFactory->create(postings: $otherLedgerPostings),
+            ];
+            $repository = $getTransactionRepository($transactions);
+
+            $expectedTransactions = array_slice($transactions, 0, 1);
+            $criteria = new TransactionSearchCriteria(
+                ledgers: [$ledger],
             );
             $actualTransactions = iterator_to_array(
                 $repository->searchTransactions($ledger, $criteria),

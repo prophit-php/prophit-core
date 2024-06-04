@@ -5,6 +5,7 @@ namespace Prophit\Core\Transaction;
 use Prophit\Core\{
     Account\Account,
     Date\DateRange,
+    Ledger\Ledger,
     Money\Money,
     Money\MoneyRange,
     Transaction\PostingStatus,
@@ -17,6 +18,7 @@ class TransactionSearchCriteria
 {
     /**
      * @param string[]|null $ids
+     * @param Ledger[]|null $ledgers
      * @param Account[]|null $accounts
      * @param PostingStatus[]|null $postingStatuses
      * @param TransactionStatus[]|null $transactionStatuses
@@ -30,6 +32,7 @@ class TransactionSearchCriteria
         private DateTimeInterface|DateRange|null $clearedDates = null,
         private ?array $postingStatuses = null,
         private ?array $transactionStatuses = null,
+        private ?array $ledgers = null,
     ) { }
 
     /**
@@ -84,6 +87,14 @@ class TransactionSearchCriteria
         return $this->transactionStatuses;
     }
 
+    /**
+     * @return Ledger[]|null
+     */
+    public function getLedgers(): ?array
+    {
+        return $this->ledgers;
+    }
+
     public function hasCriteria(): bool
     {
         return !(
@@ -94,7 +105,8 @@ class TransactionSearchCriteria
             $this->amounts === null &&
             $this->clearedDates === null &&
             $this->postingStatuses === null &&
-            $this->transactionStatuses === null
+            $this->transactionStatuses === null &&
+            $this->ledgers === null
         );
     }
 }

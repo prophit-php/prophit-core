@@ -7,7 +7,9 @@ use Prophit\Core\{
     Account\AccountException,
     Account\AccountRepository,
     Account\AccountSearchCriteria,
+    Ledger\Ledger,
     Tests\Account\AccountFactory,
+    Tests\Ledger\LedgerFactory,
 };
 
 class AccountRepositoryTestFactory
@@ -103,6 +105,29 @@ class AccountRepositoryTestFactory
             $expectedAccounts = array_slice($accounts, 0, 3);
             $criteria = new AccountSearchCriteria(
                 name: $accounts[0]->getName(),
+            );
+            $actualAccounts = iterator_to_array(
+                $repository->searchAccounts($criteria),
+            );
+            expect($expectedAccounts)->toBe($actualAccounts);
+        });
+
+        it('searches accounts by ledger', function () use ($fqcn, $factory) {
+            $ledgerFactory = new LedgerFactory;
+            $firstLedger = $ledgerFactory->create(name: 'First Ledger');
+            $secondLedger = $ledgerFactory->create(name: 'Second Ledger');
+            $accounts = [
+                $factory->create(name: 'First Ledger First Account', ledger: $firstLedger),
+                $factory->create(name: 'First Ledger Second Account', ledger: $firstLedger),
+                $factory->create(name: 'Second Ledger First Account', ledger: $secondLedger),
+                $factory->create(name: 'Second Ledger Second Account', ledger: $secondLedger),
+            ];
+            /** @var AccountRepository */
+            $repository = new $fqcn(...$accounts);
+
+            $expectedAccounts = array_slice($accounts, 0, 2);
+            $criteria = new AccountSearchCriteria(
+                ledgers: [$firstLedger],
             );
             $actualAccounts = iterator_to_array(
                 $repository->searchAccounts($criteria),

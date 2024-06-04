@@ -68,7 +68,8 @@ class ArrayTransactionRepository implements TransactionRepository
             $this->accountsMatch($transaction, $criteria) ||
             $this->amountsMatch($transaction, $criteria) ||
             $this->clearedDatesMatch($transaction, $criteria) ||
-            $this->statusesMatch($transaction, $criteria);
+            $this->statusesMatch($transaction, $criteria) ||
+            $this->ledgersMatch($transaction, $criteria);
     }
 
     private function idsMatch(
@@ -191,6 +192,22 @@ class ArrayTransactionRepository implements TransactionRepository
         if (is_array($postingStatuses) && count($postingStatuses) > 0) {
             foreach ($transaction->getPostings() as $posting) {
                 if (in_array($posting->getStatus(), $postingStatuses, true)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private function ledgersMatch(
+        Transaction $transaction,
+        TransactionSearchCriteria $criteria
+    ): bool {
+        $transactionLedger = $transaction->getLedger();
+        $ledgers = $criteria->getLedgers();
+        if (is_array($ledgers) && count($ledgers) > 0) {
+            foreach ($ledgers as $ledger) {
+                if ($ledger->isSame($transactionLedger)) {
                     return true;
                 }
             }

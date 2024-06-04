@@ -39,4 +39,9 @@ class Ledger
     {
         return $this->status === LedgerStatus::Locked;
     }
+
+    public function isSame(self $ledger): bool
+    {
+        return $this->id === $ledger->id;
+    }
 }

@@ -3,9 +3,12 @@
 namespace Prophit\Core\Transaction;
 
 use DateTimeInterface;
+use Prophit\Core\Ledger\Ledger;
 
 class Transaction
 {
+    private Ledger $ledger;
+
     /**
      * @param Posting[] $postings
      */
@@ -15,7 +18,10 @@ class Transaction
         private TransactionStatus $status,
         private array $postings,
         private ?string $description = null,
-    ) { }
+    ) {
+        $firstPosting = reset($postings);
+        $this->ledger = $firstPosting->getAccount()->getLedger();
+    }
 
     public function getId(): string
     {
@@ -53,5 +59,10 @@ class Transaction
     public function getDescription(): ?string
     {
         return $this->description;
+    }
+
+    public function getLedger(): Ledger
+    {
+        return $this->ledger;
     }
 }

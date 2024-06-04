@@ -66,7 +66,8 @@ class ArrayAccountRepository implements AccountRepository
         return
             !$criteria->hasCriteria() ||
             $this->idsMatch($account, $criteria) ||
-            $this->nameMatches($account, $criteria);
+            $this->nameMatches($account, $criteria) ||
+            $this->ledgersMatch($account, $criteria);
     }
 
     private function idsMatch(Account $account, AccountSearchCriteria $criteria): bool
@@ -79,5 +80,19 @@ class ArrayAccountRepository implements AccountRepository
     {
         $name = $criteria->getName();
         return is_string($name) && stripos($account->getName(), $name) !== false;
+    }
+
+    private function ledgersMatch(Account $account, AccountSearchCriteria $criteria): bool
+    {
+        $accountLedger = $account->getLedger();
+        $ledgers = $criteria->getLedgers();
+        if (is_array($ledgers) && count($ledgers) > 0) {
+            foreach ($ledgers as $ledger) {
+                if ($ledger->isSame($accountLedger)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
